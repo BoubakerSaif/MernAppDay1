@@ -5,13 +5,13 @@ import { useDispatch, useSelector } from "react-redux";
 
 const TodoList = () => {
   const dispatch = useDispatch();
-  const { allTodos, newTodo, deletedTodo, loading } = useSelector(
+  const { allTodos, newTodo, deletedTodo, loading, updatedTodo } = useSelector(
     (state) => state.TodoReducer
   );
 
   useEffect(() => {
     dispatch(getAllTodos());
-  }, [newTodo, deletedTodo]);
+  }, [newTodo, deletedTodo, updatedTodo]);
 
   return (
     <div className="mt-4">

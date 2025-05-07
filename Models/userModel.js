@@ -1,10 +1,10 @@
 import mongoose from "mongoose";
-
+import bcrypt from "bcryptjs";
 const userSchema = mongoose.Schema(
   {
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
-    Email: { type: String, required: true, unique: true },
+    email: { type: String, required: true, unique: true },
     age: { type: Number },
     profileImage: {
       type: String,
@@ -15,5 +15,13 @@ const userSchema = mongoose.Schema(
   },
   { timeStamps: true }
 );
+
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) {
+    next();
+  }
+  const salt = await bcrypt.genSalt(12);
+  this.password = await bcrypt.hash(this.password, salt);
+});
 
 export default mongoose.model("User", userSchema);
