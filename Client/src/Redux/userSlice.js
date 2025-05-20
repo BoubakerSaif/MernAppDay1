@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { clearCredentials, setCredentials } from "./authSlice";
 
 export const signUp = createAsyncThunk(
   "user/signup",
@@ -20,6 +21,47 @@ export const signUp = createAsyncThunk(
   }
 );
 
+export const signIn = createAsyncThunk(
+  "user/signin",
+  async ({ user, navigate, toast }, { dispatch }) => {
+    axios.defaults.withCredentials = true;
+    try {
+      const { data } = await axios.post(
+        "http://localhost:5000/api/users/auth",
+        user
+      );
+      dispatch(setCredentials(data));
+      if (data) {
+        navigate("/");
+        toast.success("User loggedIn Successfully");
+      }
+      return data;
+    } catch (error) {
+      toast.error(error.response.data.message);
+    }
+  }
+);
+
+export const logout = createAsyncThunk(
+  "user/logout",
+  async ({ navigate, toast }, { dispatch }) => {
+    axios.defaults.withCredentials = true;
+    try {
+      const { data } = await axios.post(
+        "http://localhost:5000/api/users/logout"
+      );
+      dispatch(clearCredentials());
+      if (data) {
+        navigate("/");
+        toast.success("User loggedOut");
+      }
+      return data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
 const userSlice = createSlice({
   name: "user",
   initialState: {},
@@ -29,12 +71,24 @@ const userSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(signUp.fulfilled, (state, action) => {
-      state.laoding = false;
+      state.loading = false;
       state.createdUser = action.payload;
     });
     builder.addCase(signUp.rejected, (state) => {
       state.loading = false;
     });
+    /////////////////////////////////////////////////////////////////////////
+    builder.addCase(signIn.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(signIn.fulfilled, (state, action) => {
+      state.loading = false;
+      state.loggedInUser = action.payload;
+    });
+    builder.addCase(signIn.rejected, (state) => {
+      state.loading = false;
+    });
+    /////////////////////////////////////////////////////////////
   },
 });
 

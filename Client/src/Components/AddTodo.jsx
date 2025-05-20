@@ -1,10 +1,12 @@
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { createTodo } from "../Redux/todoSlice";
-
+import { useNavigate } from "react-router-dom";
 const AddTodo = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [text, setText] = useState("");
+  const { userInfo } = useSelector((state) => state.AuthReducer);
   return (
     <div className="mt-2 flex gap-2">
       <input
@@ -18,8 +20,9 @@ const AddTodo = () => {
       />
       <button
         onClick={() => {
-          dispatch(createTodo({ task: text }));
-          setText("");
+          userInfo
+            ? (dispatch(createTodo({ task: text })), setText(""))
+            : navigate("/signin");
         }}
         className="bg-green-500 py-1 px-2 rounded-md cursor-pointer hover:scale-105 duration-200"
       >

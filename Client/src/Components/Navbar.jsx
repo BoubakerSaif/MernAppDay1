@@ -1,7 +1,16 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { logout } from "../Redux/userSlice";
+import { toast } from "react-toastify";
 
 const Navbar = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { userInfo } = useSelector((state) => state.AuthReducer);
+  const logoutHandler = (e) => {
+    e.preventDefault();
+    dispatch(logout({ navigate, toast }));
+  };
   return (
     <nav className="bg-white border-gray-200 py-2.5 dark:bg-gray-900">
       <div className="flex flex-wrap items-center justify-between max-w-screen-xl px-4 mx-auto">
@@ -14,19 +23,41 @@ const Navbar = () => {
           <div className="hidden mt-2 mr-4 sm:inline-block">
             <span></span>
           </div>
-
-          <Link
-            to={"/signup"}
-            className="text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 sm:mr-2 lg:mr-0 dark:bg-purple-600 dark:hover:bg-purple-700 focus:outline-none dark:focus:ring-purple-800"
-          >
-            SignUp
-          </Link>
-          <Link
-            to={"/signin"}
-            className="text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 sm:mr-2 lg:mr-0 dark:bg-purple-600 dark:hover:bg-purple-700 focus:outline-none dark:focus:ring-purple-800"
-          >
-            SignIn
-          </Link>
+          {userInfo ? (
+            <>
+              <div className="flex items-center">
+                <p className=" cursor-pointer block py-2 pl-3 pr-4 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-purple-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700">
+                  {`${userInfo.firstName.toUpperCase()} ${userInfo.lastName.toUpperCase()}`}
+                </p>
+                <img
+                  src={userInfo.profileImage}
+                  width={"50px"}
+                  className=" cursor-pointer"
+                />
+              </div>
+              <Link
+                onClick={logoutHandler}
+                className="text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 sm:mr-2 lg:mr-0 dark:bg-purple-600 dark:hover:bg-purple-700 focus:outline-none dark:focus:ring-purple-800"
+              >
+                Logout
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link
+                to={"/signup"}
+                className="text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 sm:mr-2 lg:mr-0 dark:bg-purple-600 dark:hover:bg-purple-700 focus:outline-none dark:focus:ring-purple-800"
+              >
+                SignUp
+              </Link>
+              <Link
+                to={"/signin"}
+                className="text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 sm:mr-2 lg:mr-0 dark:bg-purple-600 dark:hover:bg-purple-700 focus:outline-none dark:focus:ring-purple-800"
+              >
+                SignIn
+              </Link>
+            </>
+          )}
 
           <button
             data-collapse-toggle="mobile-menu-2"
