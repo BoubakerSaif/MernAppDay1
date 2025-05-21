@@ -12,7 +12,7 @@ const TodoItem = ({ todoInfo }) => {
   const { userInfo } = useSelector((state) => state.AuthReducer);
   const dispatch = useDispatch();
   return (
-    <div className="flex flex-col  w-[250px] ml-2">
+    <div className="flex flex-col  w-[400px] ml-2">
       <div className="flex items-center ">
         <img width={"40px"} src={todoInfo.createdBy.profileImage} />
         <p>
@@ -20,7 +20,8 @@ const TodoItem = ({ todoInfo }) => {
         </p>
       </div>
       <div className="flex gap-2 items-center ">
-        {userInfo?.id == todoInfo.createdBy._id && (
+        {(userInfo?.id == todoInfo.createdBy._id ||
+          userInfo?.admin === true) && (
           <input type="checkbox" defaultChecked={todoInfo.completed} />
         )}
 
@@ -37,23 +38,25 @@ const TodoItem = ({ todoInfo }) => {
           <p>{todoInfo.task} </p>
         )}
 
-        {userInfo?.id == todoInfo.createdBy._id && !isEdited && (
-          <MdDeleteForever
-            className="text-red-500 text-xl cursor-pointer"
-            onClick={() => {
-              dispatch(deleteTodo(todoInfo._id));
-            }}
-          />
-        )}
+        {(userInfo?.id == todoInfo.createdBy._id || userInfo?.admin === true) &&
+          !isEdited && (
+            <MdDeleteForever
+              className="text-red-500 text-xl cursor-pointer"
+              onClick={() => {
+                dispatch(deleteTodo(todoInfo._id));
+              }}
+            />
+          )}
 
-        {userInfo?.id == todoInfo.createdBy._id && !isEdited && (
-          <FaRegEdit
-            className="text-yellow-600 text-lg cursor-pointer"
-            onClick={() => {
-              setIsEdited(true);
-            }}
-          />
-        )}
+        {(userInfo?.id == todoInfo.createdBy._id || userInfo?.admin === true) &&
+          !isEdited && (
+            <FaRegEdit
+              className="text-yellow-600 text-lg cursor-pointer"
+              onClick={() => {
+                setIsEdited(true);
+              }}
+            />
+          )}
         {isEdited && (
           <MdOutlineCancel
             className="text-lg cursor-pointer"

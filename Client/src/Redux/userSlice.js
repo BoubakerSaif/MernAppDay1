@@ -62,6 +62,24 @@ export const logout = createAsyncThunk(
   }
 );
 
+export const updateUser = createAsyncThunk(
+  "user/update",
+  async ({ user, navigate, toast }, { dispatch }) => {
+    axios.defaults.withCredentials = true;
+    try {
+      const { data } = await axios.put("http://localhost:5000/api/users", user);
+      if (data) {
+        dispatch(clearCredentials());
+        toast.success("Profile Updated");
+        navigate("/");
+      }
+      return data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
 const userSlice = createSlice({
   name: "user",
   initialState: {},
@@ -89,6 +107,17 @@ const userSlice = createSlice({
       state.loading = false;
     });
     /////////////////////////////////////////////////////////////
+
+    builder.addCase(updateUser.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(updateUser.fulfilled, (state, action) => {
+      state.loading = false;
+      state.updatedUser = action.payload;
+    });
+    builder.addCase(updateUser.rejected, (state) => {
+      state.loading = false;
+    });
   },
 });
 

@@ -8,6 +8,9 @@ import Navbar from "./Components/Navbar.jsx";
 import SignUp from "./Pages/SignUp.jsx";
 import SignIn from "./Pages/SignIn.jsx";
 import { ToastContainer } from "react-toastify";
+import PrivateRoute from "./Components/PrivateRoute.jsx";
+import Profile from "./Pages/Profile.jsx";
+import PrivateRouteLoggedIn from "./Components/PrivateRouteLoggedIn.jsx";
 createRoot(document.getElementById("root")).render(
   <BrowserRouter>
     <Provider store={store}>
@@ -15,8 +18,13 @@ createRoot(document.getElementById("root")).render(
       <ToastContainer />
       <Routes>
         <Route path="/" element={<App />} />
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/signin" element={<SignIn />} />
+        <Route path="" element={<PrivateRoute />}>
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/signin" element={<SignIn />} />
+        </Route>
+        <Route path="" element={<PrivateRouteLoggedIn />}>
+          <Route path="/profile" element={<Profile />} />
+        </Route>
       </Routes>
     </Provider>
   </BrowserRouter>

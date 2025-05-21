@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
+
 const userSchema = mongoose.Schema(
   {
     firstName: { type: String, required: true },
@@ -12,6 +13,8 @@ const userSchema = mongoose.Schema(
         "https://png.pngtree.com/png-vector/20231019/ourmid/pngtree-user-profile-avatar-png-image_10211467.png",
     },
     password: { type: String, required: true },
+    admin: { type: Boolean, default: false },
+    blocked: { type: Boolean, default: false },
   },
   { timeStamps: true }
 );
